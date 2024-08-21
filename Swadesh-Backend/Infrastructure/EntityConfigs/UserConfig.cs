@@ -11,13 +11,9 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(u => u.FirstName)
+        builder.Property(u => u.Name)
            .IsRequired()
            .HasMaxLength(100);
-
-        builder.Property(x => x.LastName)
-        .IsRequired()
-        .HasMaxLength(100);
 
         builder.Property(x => x.Role)
         .HasDefaultValue(UserRoles.Chef);
