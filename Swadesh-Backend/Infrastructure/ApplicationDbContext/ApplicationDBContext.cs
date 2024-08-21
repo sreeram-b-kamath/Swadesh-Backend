@@ -22,7 +22,7 @@ public class ApplicationDBContext : DbContext
     public DbSet<MenuCategoryLang> menuCategoryLangs { get; set; }
     public DbSet<MenuFilterLang> menuFilterLangs { get; set; }
     public DbSet<MenuItemLang> menuItemLangs { get; set; }
-    public DbSet<RestaurantDetails> restaurantDetails { get; set; }
+    public DbSet<RestaurantLang> restaurantLangs { get; set; }
     public DbSet<MenuItemRating> menuItemRatings { get; set; }
     public DbSet<ErrorMessage> errorMessages { get; set; }
 
@@ -40,7 +40,7 @@ public class ApplicationDBContext : DbContext
         modelBuilder.ApplyConfiguration(new MenuCategoryLangConfig());
         modelBuilder.ApplyConfiguration(new MenuFilterLangConfig());
         modelBuilder.ApplyConfiguration(new MenuItemLangConfig());
-        modelBuilder.ApplyConfiguration(new RestaurantDetailsConfig());
+        modelBuilder.ApplyConfiguration(new RestaurantLangsConfig());
         modelBuilder.ApplyConfiguration(new MenuItemRatingConfig());
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using Enums;
+using System.Data;
 
 namespace Shared;
 public class UserConfig : IEntityTypeConfiguration<User>
@@ -28,16 +29,9 @@ public class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.IsEmailVerified)
         .HasDefaultValue(false);
 
-        builder.Property(x => x.CountryCode)
-        .IsRequired()
-        .HasMaxLength(100);
-
         builder.Property(x => x.Mobile)
         .IsRequired()
         .HasMaxLength(100);
-
-        builder.Property(x => x.IsMobileVerified)
-        .HasDefaultValue(false);
 
         builder.Property(x => x.Active)
        .HasDefaultValue(true);

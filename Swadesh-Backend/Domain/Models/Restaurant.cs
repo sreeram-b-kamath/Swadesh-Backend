@@ -31,7 +31,7 @@ public class Restaurant
     public bool Active { get; set; }
     public string UpdateEmail { get; set; }
     public bool InitialLogin { get; set; }
-    public ICollection<RestaurantDetails> RestaurantDetails { get; set; }
+    public ICollection<RestaurantLang> RestaurantLang { get; set; }
     public ICollection<MenuCategory> MenuCategories { get; set; }
     public ICollection<MenuFilter> MenuFilters { get; set; }
     public ICollection<MenuItem> MenuItems { get; set; }

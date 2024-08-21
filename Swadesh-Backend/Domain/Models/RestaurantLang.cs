@@ -1,7 +1,7 @@
 ﻿namespace Models;
 
 
-public class RestaurantDetails
+public class RestaurantLang
 {
     public int Id { get; set; }
     public string Code { get; set; }

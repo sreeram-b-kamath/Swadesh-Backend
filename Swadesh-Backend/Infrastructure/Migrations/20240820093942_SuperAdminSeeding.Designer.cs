@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shared.Data;
@@ -11,9 +12,11 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240820093942_SuperAdminSeeding")]
+    partial class SuperAdminSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -510,7 +513,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("restaurants");
                 });
 
-            modelBuilder.Entity("Models.RestaurantLang", b =>
+            modelBuilder.Entity("Models.RestaurantDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -534,7 +537,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RestaurantId", "Code")
                         .IsUnique();
 
-                    b.ToTable("restaurantLangs");
+                    b.ToTable("restaurantDetails");
                 });
 
             modelBuilder.Entity("Models.User", b =>
@@ -602,6 +605,24 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Active = true,
+                            Email = "sreerambkamath@gmail.com",
+                            FirstName = "Sreeram",
+                            IsEmailVerified = true,
+                            LastLogin = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Kamath",
+                            Mobile = "9497158008",
+                            OTP = 0,
+                            OTPUsed = false,
+                            OtpExpiry = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "Sreeram@1234",
+                            Role = 0
+                        });
                 });
 
             modelBuilder.Entity("Shared.ErrorMessage", b =>
@@ -760,10 +781,10 @@ namespace Infrastructure.Migrations
                     b.Navigation("Restaurant");
                 });
 
-            modelBuilder.Entity("Models.RestaurantLang", b =>
+            modelBuilder.Entity("Models.RestaurantDetails", b =>
                 {
                     b.HasOne("Models.Restaurant", "Restaurant")
-                        .WithMany("RestaurantLang")
+                        .WithMany("RestaurantDetails")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -814,7 +835,7 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("MenuItemsLangs");
 
-                    b.Navigation("RestaurantLang");
+                    b.Navigation("RestaurantDetails");
                 });
 #pragma warning restore 612, 618
         }
