@@ -12,8 +12,6 @@ public class ApplicationDBContext : DbContext
     }
     public DbSet<User> users { get; set; }
     public DbSet<Restaurant> restaurants { get; set; }
-    public DbSet<MasterCategory> masterCategories { get; set; }
-    public DbSet<MasterCategoryLang> masterCategoryLangs { get; set; }
     public DbSet<MasterFilter> masterFilters { get; set; }
     public DbSet<MasterFilterLang> masterFilterLangs { get; set; }
     public DbSet<MenuCategory> menuCategories { get; set; }
@@ -30,8 +28,6 @@ public class ApplicationDBContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new UserConfig());
         modelBuilder.ApplyConfiguration(new RestaurantConfig());
-        modelBuilder.ApplyConfiguration(new MasterCategoryConfig());
-        modelBuilder.ApplyConfiguration(new MasterCategoryLangConfig());
         modelBuilder.ApplyConfiguration(new MasterFilterConfig());
         modelBuilder.ApplyConfiguration(new MasterFilterLangConfig());
         modelBuilder.ApplyConfiguration(new MenuCategoryConfig());
