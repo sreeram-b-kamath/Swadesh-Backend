@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Models;
 
@@ -11,19 +12,10 @@ public class Restaurant
     public string Name { get; set; }
     public string OwnerName { get; set; }
     public string Address { get; set; }
-    public UserRoles Roles { get; set; }
     public string Logo { get; set; }
     public string Cuisine { get; set; }
     public string Contact { get; set; }
-    public string Email { get; set; }
-    public bool isEmailVerified { get; set; }
-    public int OTP { get; set; }
-    public bool OTPUsed { get; set; }
-    public DateTime LastLogin { get; set; }
-    public DateTime OtpExpiry { get; set; }
-    public string Password { get; set; }
     public bool Active { get; set; }
-    public string UpdateEmail { get; set; }
     public bool InitialLogin { get; set; }
     public ICollection<RestaurantLang> RestaurantLang { get; set; }
     public ICollection<MenuCategory> MenuCategories { get; set; }
