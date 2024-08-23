@@ -1,19 +1,18 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Models;
 
 namespace Shared.Data;
 
-public class ApplicationDBContext : DbContext
+public class ApplicationDBContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
     {
     }
-    public DbSet<User> users { get; set; }
     public DbSet<Restaurant> restaurants { get; set; }
-    public DbSet<MasterCategory> masterCategories { get; set; }
-    public DbSet<MasterCategoryLang> masterCategoryLangs { get; set; }
     public DbSet<MasterFilter> masterFilters { get; set; }
     public DbSet<MasterFilterLang> masterFilterLangs { get; set; }
     public DbSet<MenuCategory> menuCategories { get; set; }
@@ -28,10 +27,10 @@ public class ApplicationDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new UserConfig());
         modelBuilder.ApplyConfiguration(new RestaurantConfig());
-        modelBuilder.ApplyConfiguration(new MasterCategoryConfig());
-        modelBuilder.ApplyConfiguration(new MasterCategoryLangConfig());
         modelBuilder.ApplyConfiguration(new MasterFilterConfig());
         modelBuilder.ApplyConfiguration(new MasterFilterLangConfig());
         modelBuilder.ApplyConfiguration(new MenuCategoryConfig());

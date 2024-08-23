@@ -1,11 +1,11 @@
 ﻿using Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Models;
-public class User
+public class User : IdentityUser<int>
 { 
     public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Name { get; set; }
     public UserRoles Role { get; set; }
     public string Email { get; set; }
     public bool IsEmailVerified { get; set; }
@@ -16,4 +16,6 @@ public class User
     public bool OTPUsed { get; set; }
     public DateTime LastLogin { get; set; }
     public DateTime OtpExpiry { get; set; }
+    public int RestaurantId { get; set; } 
+    public virtual Restaurant Restaurant { get; set; }
 }

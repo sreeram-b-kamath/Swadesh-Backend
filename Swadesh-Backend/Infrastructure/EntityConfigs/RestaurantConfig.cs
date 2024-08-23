@@ -15,15 +15,6 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
         builder.Property(x => x.Active)
         .HasDefaultValue(true);
 
-        builder.Property(x => x.isEmailVerified)
-        .HasDefaultValue(false);
-
-        builder.Property(x => x.OTPUsed)
-        .HasDefaultValue(false);
-
-        builder.Property(x => x.Roles)
-        .HasDefaultValue(UserRoles.Chef);
-
         builder.Property(x => x.InitialLogin)
         .HasDefaultValue(true);
 

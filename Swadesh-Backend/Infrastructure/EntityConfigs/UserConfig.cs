@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using Enums;
 using System.Data;
+using System.Reflection.Emit;
 
 namespace Shared;
 public class UserConfig : IEntityTypeConfiguration<User>
@@ -11,13 +12,14 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(u => u.FirstName)
+        builder.HasOne(u => u.Restaurant)
+               .WithOne()
+               .HasForeignKey<User>(u => u.RestaurantId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property(u => u.Name)
            .IsRequired()
            .HasMaxLength(100);
-
-        builder.Property(x => x.LastName)
-        .IsRequired()
-        .HasMaxLength(100);
 
         builder.Property(x => x.Role)
         .HasDefaultValue(UserRoles.Chef);
