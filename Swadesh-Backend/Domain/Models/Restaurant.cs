@@ -17,6 +17,8 @@ public class Restaurant
     public string Contact { get; set; }
     public bool Active { get; set; }
     public bool InitialLogin { get; set; }
+    public int UserId { get; set; }
+    public User User { get; set; }
     public ICollection<RestaurantLang> RestaurantLang { get; set; }
     public ICollection<MenuCategory> MenuCategories { get; set; }
     public ICollection<MenuFilter> MenuFilters { get; set; }
