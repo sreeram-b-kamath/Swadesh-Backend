@@ -1,4 +1,3 @@
-
 namespace Dtos;
 
 public class RegisterDto

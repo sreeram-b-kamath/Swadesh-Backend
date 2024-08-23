@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using Models;
 using Shared.Data;
 using Helpers.Hashing;
@@ -52,3 +52,4 @@ public class RegisterService : IRegisterService
     }
 }
 
+*/

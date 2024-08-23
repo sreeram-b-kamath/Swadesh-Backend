@@ -1,4 +1,4 @@
-﻿using Models;
+﻿/*using Models;
 using Shared.Data;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Core;
@@ -69,4 +69,4 @@ public class EmailService : IEmailService
         return isEmailSend;
     }
 
-}
+}*/

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using Enums;
 using System.Data;
+using System.Reflection.Emit;
 
 namespace Shared;
 public class UserConfig : IEntityTypeConfiguration<User>
@@ -10,6 +11,11 @@ public class UserConfig : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);
+
+        builder.HasOne(u => u.Restaurant)
+               .WithOne()
+               .HasForeignKey<User>(u => u.RestaurantId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(u => u.Name)
            .IsRequired()
