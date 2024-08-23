@@ -12,8 +12,8 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240823052458_RestaurantLinkedToUserForIdentityRegistrationToNewDB")]
-    partial class RestaurantLinkedToUserForIdentityRegistrationToNewDB
+    [Migration("20240823055327_testMigration")]
+    partial class testMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

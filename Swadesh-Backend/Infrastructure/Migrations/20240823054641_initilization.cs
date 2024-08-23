@@ -7,11 +7,26 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initilization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "errorMessages",
                 columns: table => new
@@ -23,20 +38,6 @@ namespace Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_errorMessages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "masterCategories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    DefaultOrder = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_masterCategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,25 +65,10 @@ namespace Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     OwnerName = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
-                    Roles = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
                     Logo = table.Column<string>(type: "text", nullable: false),
-                    Background = table.Column<string>(type: "text", nullable: false),
                     Cuisine = table.Column<string>(type: "text", nullable: false),
-                    ZipCode = table.Column<string>(type: "text", nullable: false),
-                    Street = table.Column<string>(type: "text", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    Province = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
                     Contact = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    isEmailVerified = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    OTP = table.Column<int>(type: "integer", nullable: false),
-                    OTPUsed = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    OtpExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
                     Active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    UpdateEmail = table.Column<string>(type: "text", nullable: false),
                     InitialLogin = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
@@ -91,48 +77,22 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    IsEmailVerified = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    CountryCode = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Mobile = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    IsMobileVerified = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    Password = table.Column<string>(type: "character varying(1500)", maxLength: 1500, nullable: false),
-                    Active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    OTP = table.Column<int>(type: "integer", nullable: false),
-                    OTPUsed = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    OtpExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "masterCategoryLangs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    MasterCategoryId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_masterCategoryLangs", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_masterCategoryLangs_masterCategories_MasterCategoryId",
-                        column: x => x.MasterCategoryId,
-                        principalTable: "masterCategories",
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -156,6 +116,49 @@ namespace Infrastructure.Migrations
                         principalTable: "masterFilters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IsEmailVerified = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    Mobile = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "character varying(1500)", maxLength: 1500, nullable: false),
+                    Active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    OTP = table.Column<int>(type: "integer", nullable: false),
+                    OTPUsed = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    OtpExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RestaurantId = table.Column<int>(type: "integer", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "restaurants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,7 +208,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "restaurantDetails",
+                name: "restaurantLangs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -216,11 +219,96 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_restaurantDetails", x => x.Id);
+                    table.PrimaryKey("PK_restaurantLangs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_restaurantDetails_restaurants_RestaurantId",
+                        name: "FK_restaurantLangs_restaurants_RestaurantId",
                         column: x => x.RestaurantId,
                         principalTable: "restaurants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -377,15 +465,46 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_masterCategories_Name",
-                table: "masterCategories",
-                column: "Name",
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_masterCategoryLangs_MasterCategoryId_Code",
-                table: "masterCategoryLangs",
-                columns: new[] { "MasterCategoryId", "Code" },
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_RestaurantId",
+                table: "AspNetUsers",
+                column: "RestaurantId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -483,8 +602,8 @@ namespace Infrastructure.Migrations
                 column: "RestaurantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_restaurantDetails_RestaurantId_Code",
-                table: "restaurantDetails",
+                name: "IX_restaurantLangs_RestaurantId_Code",
+                table: "restaurantLangs",
                 columns: new[] { "RestaurantId", "Code" },
                 unique: true);
         }
@@ -493,10 +612,22 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "errorMessages");
+                name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
-                name: "masterCategoryLangs");
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "errorMessages");
 
             migrationBuilder.DropTable(
                 name: "masterFilterLangs");
@@ -514,13 +645,13 @@ namespace Infrastructure.Migrations
                 name: "menuItemRatings");
 
             migrationBuilder.DropTable(
-                name: "restaurantDetails");
+                name: "restaurantLangs");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "masterCategories");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "masterFilters");
