@@ -16,6 +16,4 @@ public class User : IdentityUser<int>
     public bool OTPUsed { get; set; }
     public DateTime LastLogin { get; set; }
     public DateTime OtpExpiry { get; set; }
-    public int RestaurantId { get; set; } 
-    public virtual Restaurant Restaurant { get; set; }
 }

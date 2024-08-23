@@ -10,6 +10,11 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
     {
         builder.HasKey(x => x.Id);
 
+        builder.HasOne(u => u.User)
+               .WithOne()
+               .HasForeignKey<Restaurant>(r => r.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(x => x.Name).IsRequired();
 
         builder.Property(x => x.Active)

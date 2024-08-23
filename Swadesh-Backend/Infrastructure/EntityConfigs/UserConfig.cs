@@ -12,11 +12,6 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(u => u.Restaurant)
-               .WithOne()
-               .HasForeignKey<User>(u => u.RestaurantId)
-               .OnDelete(DeleteBehavior.Restrict);
-
         builder.Property(u => u.Name)
            .IsRequired()
            .HasMaxLength(100);
