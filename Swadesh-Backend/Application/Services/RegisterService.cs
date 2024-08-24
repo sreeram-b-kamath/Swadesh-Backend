@@ -1,54 +1,52 @@
 ﻿/*using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Models;
-using Shared.Data;
-using Helpers.Hashing;
 using Dtos;
+using Shared.Data;
 
 namespace Application.Services;
 
 public class RegisterService : IRegisterService
 {
-    private readonly ApplicationDBContext _dataContext;
-    public RegisterService(ApplicationDBContext dataContext)
+    private readonly ApplicationDBContext _context;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<IdentityRole<int>> _roleManager;
+    public RegisterService(ApplicationDBContext dataContext, UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager)
     {
-        _dataContext = dataContext;
+        _context = dataContext;
+        _userManager = userManager;
+        _roleManager = roleManager;
     }
-
-    public async Task<bool> CheckEmailExist(RegisterDto registerDto)
+    public async Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto)
     {
-        if (registerDto != null)
+        // Create the Restaurant
+        var restaurant = new Restaurant
         {
-            var userEmail = await _dataContext.users
-            .FirstOrDefaultAsync(x => x.Email == registerDto.Email);
+            Name = registerDto.RestaurantName,
+            Logo = registerDto.Logo,
+            // Set other properties if needed
+        };
 
-            var restaurantEmail = await _dataContext.restaurants
-            .FirstOrDefaultAsync(x => x.Email == registerDto.Email);
+        _context.Restaurants.Add(restaurant);
+        await _context.SaveChangesAsync();
 
-            if (userEmail != null || restaurantEmail != null)
-                return true;
+        // Create the User
+        var user = new User
+        {
+            UserName = registerDto.Email,
+            Email = registerDto.Email,
+            RestaurantId = restaurant.Id // Link the user to the restaurant
+        };
 
+        var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+        if (result.Succeeded)
+        {
+            // Optionally assign roles or additional configuration
         }
-        return false;
-    }
 
-    public async Task<Restaurant> RegisterRestaurant(RegisterDto registerDto)
-    {
-        Restaurant restaurant = new();
-
-        if (registerDto == null)
-            return restaurant;
-
-
-        restaurant.Name = registerDto.RestaurantName;
-        restaurant.Email = registerDto.Email;
-        restaurant.Password = Hashing.Encyrpt(registerDto.Password);
-        restaurant.Logo = registerDto.Logo;
-        restaurant.Uid = Guid.NewGuid().ToString();
-
-        await _dataContext.restaurants.AddAsync(restaurant);
-        var rowEffected = await _dataContext.SaveChangesAsync();
-
-        return restaurant;
+        return result;
     }
 }
 
