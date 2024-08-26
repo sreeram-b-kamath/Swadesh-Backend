@@ -5,5 +5,5 @@ namespace Interface.EmailService;
 
 public interface IEmailService
 {
-    Task<bool> SendEmail(Restaurant restaurant = null, User user = null, bool isUpdateEmail = false);
+    Task<bool> SendEmail(User user, int otp);
 }
