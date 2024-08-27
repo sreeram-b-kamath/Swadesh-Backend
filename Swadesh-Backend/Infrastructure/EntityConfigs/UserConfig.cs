@@ -12,10 +12,6 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(u => u.Name)
-           .IsRequired()
-           .HasMaxLength(100);
-
         builder.Property(x => x.Role)
         .HasDefaultValue(UserRoles.Chef);
 
@@ -26,18 +22,10 @@ public class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.IsEmailVerified)
         .HasDefaultValue(false);
 
-        builder.Property(x => x.Mobile)
-        .IsRequired()
-        .HasMaxLength(100);
-
         builder.Property(x => x.Active)
        .HasDefaultValue(true);
 
         builder.Property(x => x.OTPUsed)
         .HasDefaultValue(false);
-
-        builder.Property(u => u.Password)
-        .IsRequired()
-        .HasMaxLength(1500);
     }
 }

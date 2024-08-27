@@ -1,8 +1,14 @@
-namespace Shared;
-
-public class OtpDto
+namespace Dtos
 {
-    public string Email { get; set; }
-    public int OTP { get; set; }
-    public bool IsRegister { get; set; } = false;
+    public class OtpRequestDto
+    {
+        public string Email { get; set; }
+    }
+
+    public class VerifyOtpDto
+    {
+        public string Email { get; set; }
+        public string Otp { get; set; }
+        public RegisterDto RegisterDto { get; set; }
+    }
 }

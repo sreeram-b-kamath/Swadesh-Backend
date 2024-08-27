@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Shared.Data;
 using Application.Services;
 using System;
-/*using Application.Services.EMailService;*/
+using Application.Services.EMailService;
 using Interface.EmailService;
 using Application.Interface;
 using ComplianceCalendar.Services.EmailService;
@@ -22,9 +22,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-/*builder.Services.AddScoped<IRegisterService, RegisterService>();*/
+builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-/*builder.Services.AddScoped<IEmailService, EmailService>();*/
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 DotNetEnv.Env.Load();
 
