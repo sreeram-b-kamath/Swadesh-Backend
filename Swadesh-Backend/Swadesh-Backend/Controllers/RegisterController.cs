@@ -1,73 +1,73 @@
-﻿using Application.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Dtos;
-using Microsoft.AspNetCore.Mvc;
-using Helpers;
-using Interface.EmailService;
-using AutoMapper;
-using Models;
+using Application.Services;
+using Microsoft.Extensions.Logging;
 
-namespace Swadesh_Backend.Controllers
+namespace Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class RegisterController : ControllerBase
     {
-        public readonly IRegisterService _registerService;
-        public readonly IEmailService _emailService;
-        public readonly IMapper _mapper;
+        private readonly IRegisterService _registerService;
+        private readonly ILogger<RegisterController> _logger;
 
-        public RegisterController(IRegisterService registerService, IEmailService emailSender, IMapper mapper)
+        public RegisterController(IRegisterService registerService, ILogger<RegisterController> logger)
         {
             _registerService = registerService;
-            _emailService = emailSender;
-            _mapper = mapper;
+            _logger = logger;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RegisterRestaurant(RegisterDto registerDto)
+        // POST: api/register/send-otp
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtp([FromBody] OtpRequestDto otpRequestDto)
         {
-            var hoteltoregister = registerDto;
-            if (hoteltoregister == null)
+            if (!ModelState.IsValid)
             {
-                throw new ArgumentNullException(nameof(registerDto));
+                return BadRequest(ModelState);
             }
-            else
+
+            try
             {
-                var isEmailExisting = await _registerService.CheckEmailExist(hoteltoregister);
-                if (isEmailExisting)
+                var result = await _registerService.SendOtpAsync(otpRequestDto.Email);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while sending OTP.");
+                return StatusCode(500, "Internal server error while sending OTP.");
+            }
+        }
+
+        // POST: api/register/verify-otp
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtpAndRegister([FromBody] VerifyOtpDto verifyOtpDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var result = await _registerService.VerifyOtpAndRegisterAsync(
+                    verifyOtpDto.Email,
+                    verifyOtpDto.Otp,
+                    verifyOtpDto.RegisterDto
+                );
+
+                if (result.Succeeded)
                 {
-                    return BadRequest("Email already exists");
+                    return Ok("Registration completed successfully.");
                 }
 
-                if (!ValidatePassword.CheckPassWord(registerDto.Password))
-                {
-                    return BadRequest("Password not matching standards");
-                }
-
-                //ValidateEmail
-                var isEmailValidated = ValidateEmail.ValidateEmailAddress(registerDto.Email);
-
-                if (!ValidateEmail.ValidateEmailAddress(registerDto.Email))
-                {
-                    return BadRequest("Email domain does not exist");
-                }
-
-                //Register Restaurant
-                var registerRestaurant = await _registerService.RegisterRestaurant(registerDto);
-
-                if (registerRestaurant == null && registerRestaurant.Id <= 0)
-                    throw new ArgumentNullException("Unable to Register");
-
-                //Send Email
-                var emailSend = await _emailService.SendEmail(registerRestaurant);
-
-                if (!emailSend)
-                    throw new Exception("Email not send");
-
-                var restaurant = _mapper.Map<Restaurant>(registerRestaurant);
-
-                return new OkObjectResult(restaurant);
-
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while verifying OTP and registering user.");
+                return StatusCode(500, "Internal server error while verifying OTP and registering user.");
             }
         }
     }
