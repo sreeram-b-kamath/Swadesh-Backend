@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Models;
-using Dtos;
+﻿using Dtos;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services;
