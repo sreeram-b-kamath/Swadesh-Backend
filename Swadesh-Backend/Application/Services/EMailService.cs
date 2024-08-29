@@ -21,7 +21,7 @@ public class EmailService : IEmailService
         {
             var emailId = user?.Email;
             var subject = "Email Verification from Swadesh";
-            var emailContent = $"<h1>Your OTP for Swasdesh : {otp}</h1>";
+            var emailContent = $"<h1>Your OTP for Swadesh : {otp}</h1>";
 
             await _emailSender.SendEmailAsync(emailId, subject, emailContent);
         }
