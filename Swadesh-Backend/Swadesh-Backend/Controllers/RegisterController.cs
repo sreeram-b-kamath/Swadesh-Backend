@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Dtos;
 using Application.Services;
 using Microsoft.Extensions.Logging;
+using Application.Interface;
+using Shared;
 
 namespace Api.Controllers
 {
@@ -12,11 +14,13 @@ namespace Api.Controllers
     {
         private readonly IRegisterService _registerService;
         private readonly ILogger<RegisterController> _logger;
+        private readonly ILoginService _loginService;
 
-        public RegisterController(IRegisterService registerService, ILogger<RegisterController> logger)
+        public RegisterController(IRegisterService registerService, ILogger<RegisterController> logger, ILoginService loginService)
         {
             _registerService = registerService;
             _logger = logger;
+            _loginService = loginService;
         }
 
         // POST: api/register/send-otp
@@ -69,6 +73,18 @@ namespace Api.Controllers
                 _logger.LogError(ex, "Error occurred while verifying OTP and registering user.");
                 return StatusCode(500, "Internal server error while verifying OTP and registering user.");
             }
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+            var token = await _loginService.AuthenticateUserAsync(loginDto);
+            if (token != null)
+            {
+                return Ok(new { token });
+            }
+
+            return Unauthorized();
         }
     }
 }
