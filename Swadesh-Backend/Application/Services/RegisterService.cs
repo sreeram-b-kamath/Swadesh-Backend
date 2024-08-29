@@ -93,7 +93,10 @@ public class RegisterService : IRegisterService
             Name = registerDto.RestaurantName,
             Logo = registerDto.Logo,
             UserId = user.Id,
-            Uid = Guid.NewGuid().ToString()
+            Uid = Guid.NewGuid().ToString(),
+            Address = registerDto.Address,
+            Contact = registerDto.Contact,
+            OwnerName = registerDto.OwnerName,
         };
         _context.restaurants.Add(restaurant);
 
