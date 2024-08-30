@@ -32,7 +32,6 @@ namespace Application.Services
                 Name = dto.Name,
                 Description = dto.Description,
                 Money = dto.Money,
-                Rating=dto.Rating,
                 RestaurantId = dto.RestaurantId,
                 MenuCategoryId = dto.MenuCategoryId,
 

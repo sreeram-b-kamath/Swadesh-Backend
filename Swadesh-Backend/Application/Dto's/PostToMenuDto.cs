@@ -13,8 +13,6 @@ namespace Application.Dto_s
         public decimal Money { get; set; }
         public int RestaurantId { get; set; }  
         public int MenuCategoryId { get; set; }
-        public int Rating { get; set; }
-
         public List<int> IngredientIds { get; set; }
     }
 }
