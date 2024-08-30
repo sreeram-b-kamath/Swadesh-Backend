@@ -1,7 +1,7 @@
 using Shared;
 namespace Dtos;
 
-public class RestaurantDto
+public class RestaurantGetDto
 {
     public string LanguageCode { get; set; }
     public int Id { get; set; }
