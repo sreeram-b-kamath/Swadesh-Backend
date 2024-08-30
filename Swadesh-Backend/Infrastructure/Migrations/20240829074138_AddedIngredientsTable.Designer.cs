@@ -12,8 +12,8 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240823055327_testMigration")]
-    partial class testMigration
+    [Migration("20240829074138_AddedIngredientsTable")]
+    partial class AddedIngredientsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,42 @@ namespace Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Models.Ingredients", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("Domain.Models.MenuItemIngredients", b =>
+                {
+                    b.Property<int>("MenuItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MenuItemId", "IngredientId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("MenuItemIngredients");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
@@ -530,7 +566,13 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("restaurants");
                 });
@@ -604,16 +646,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -633,11 +665,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("OtpExpiry")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(1500)
-                        .HasColumnType("character varying(1500)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -646,9 +673,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("RestaurantId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Role")
                         .ValueGeneratedOnAdd()
@@ -674,9 +698,6 @@ namespace Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("RestaurantId")
-                        .IsUnique();
-
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -695,6 +716,25 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("errorMessages");
+                });
+
+            modelBuilder.Entity("Domain.Models.MenuItemIngredients", b =>
+                {
+                    b.HasOne("Domain.Models.Ingredients", "Ingredients")
+                        .WithMany("MenuItemIngredients")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.MenuItem", "MenuItem")
+                        .WithMany("MenuItemIngredients")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("MenuItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -876,6 +916,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("Models.Restaurant", b =>
+                {
+                    b.HasOne("Models.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Models.Restaurant", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Models.RestaurantLang", b =>
                 {
                     b.HasOne("Models.Restaurant", "Restaurant")
@@ -887,15 +938,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("Restaurant");
                 });
 
-            modelBuilder.Entity("Models.User", b =>
+            modelBuilder.Entity("Domain.Models.Ingredients", b =>
                 {
-                    b.HasOne("Models.Restaurant", "Restaurant")
-                        .WithOne()
-                        .HasForeignKey("Models.User", "RestaurantId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Restaurant");
+                    b.Navigation("MenuItemIngredients");
                 });
 
             modelBuilder.Entity("Models.MasterFilter", b =>
@@ -915,6 +960,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.MenuItem", b =>
                 {
+                    b.Navigation("MenuItemIngredients");
+
                     b.Navigation("MenuItemRatings");
 
                     b.Navigation("MenuItemslang");

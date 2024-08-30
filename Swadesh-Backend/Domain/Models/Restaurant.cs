@@ -19,12 +19,13 @@ public class Restaurant
     public bool InitialLogin { get; set; }
     public int UserId { get; set; }
     public User User { get; set; }
-    public ICollection<RestaurantLang> RestaurantLang { get; set; }
-    public ICollection<MenuCategory> MenuCategories { get; set; }
+/*    public ICollection<RestaurantLang> RestaurantLang { get; set; }
+*/    public ICollection<MenuCategory> MenuCategories { get; set; }
     public ICollection<MenuFilter> MenuFilters { get; set; }
     public ICollection<MenuItem> MenuItems { get; set; }
-    public ICollection<MenuCategoryLang> MenuCategoryLangs { get; set; }
-    public ICollection<MenuFilterLang> MenuFiltersLangs { get; set; }
-    public ICollection<MenuItemLang> MenuItemsLangs { get; set; }
+    /*    public ICollection<MenuCategoryLang> MenuCategoryLangs { get; set; }
+    *//*    public ICollection<MenuFilterLang> MenuFiltersLangs { get; set; }
+    *//*    public ICollection<MenuItemLang> MenuItemsLangs { get; set; }
+    */
     public ICollection<MenuItemRating> MenuItemRatings { get; set; }
 }

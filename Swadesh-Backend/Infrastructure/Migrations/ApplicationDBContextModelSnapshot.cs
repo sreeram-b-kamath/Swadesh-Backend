@@ -22,6 +22,42 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Models.Ingredients", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("Domain.Models.MenuItemIngredients", b =>
+                {
+                    b.Property<int>("MenuItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MenuItemId", "IngredientId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("MenuItemIngredients");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -607,16 +643,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -635,11 +661,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("OtpExpiry")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(1500)
-                        .HasColumnType("character varying(1500)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
@@ -692,6 +713,25 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("errorMessages");
+                });
+
+            modelBuilder.Entity("Domain.Models.MenuItemIngredients", b =>
+                {
+                    b.HasOne("Domain.Models.Ingredients", "Ingredients")
+                        .WithMany("MenuItemIngredients")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.MenuItem", "MenuItem")
+                        .WithMany("MenuItemIngredients")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("MenuItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -895,6 +935,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("Domain.Models.Ingredients", b =>
+                {
+                    b.Navigation("MenuItemIngredients");
+                });
+
             modelBuilder.Entity("Models.MasterFilter", b =>
                 {
                     b.Navigation("MasterFilterLanguage");
@@ -912,6 +957,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.MenuItem", b =>
                 {
+                    b.Navigation("MenuItemIngredients");
+
                     b.Navigation("MenuItemRatings");
 
                     b.Navigation("MenuItemslang");

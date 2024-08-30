@@ -26,7 +26,7 @@ public class MenuItemConfig : IEntityTypeConfiguration<MenuItem>
         .HasColumnType("money")
         .IsRequired();
 
-        builder.Property(x => x.Currency)
+       /* builder.Property(x => x.Currency)
         .IsRequired();
        
         builder.Property(x => x.Active)
@@ -41,5 +41,5 @@ public class MenuItemConfig : IEntityTypeConfiguration<MenuItem>
         .WithOne(x => x.MenuItem)
         .HasForeignKey(x => x.MenuItemId)
         .OnDelete(DeleteBehavior.Cascade);
-    }
+ */   }
 }
