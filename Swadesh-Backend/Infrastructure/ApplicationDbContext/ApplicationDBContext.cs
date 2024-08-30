@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.Models;
+using Infrastructure.EntityConfigs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -22,6 +24,8 @@ public class ApplicationDBContext : IdentityDbContext<User, IdentityRole<int>, i
     public DbSet<RestaurantLang> restaurantLangs { get; set; }
     public DbSet<MenuItemRating> menuItemRatings { get; set; }
     public DbSet<ErrorMessage> errorMessages { get; set; }
+    public DbSet<Ingredients> Ingredients { get; set; }
+    public DbSet<MenuItemIngredients> MenuItemIngredients { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,5 +43,9 @@ public class ApplicationDBContext : IdentityDbContext<User, IdentityRole<int>, i
         modelBuilder.ApplyConfiguration(new MenuItemLangConfig());
         modelBuilder.ApplyConfiguration(new RestaurantLangsConfig());
         modelBuilder.ApplyConfiguration(new MenuItemRatingConfig());
+        modelBuilder.ApplyConfiguration(new MenuItemIngredientConfig());
     }
 }
+
+
+

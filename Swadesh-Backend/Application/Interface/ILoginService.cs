@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 
@@ -7,6 +8,6 @@ namespace Application.Interface
 {
     public interface ILoginService
     {
-        Task<IActionResult> Login(LoginDto loginDto);
+        Task<string> AuthenticateUserAsync(LoginDto loginDto);
     }
 }

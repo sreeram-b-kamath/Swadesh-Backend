@@ -13,5 +13,5 @@ public class MenuCategory
     public bool Active { get; set; }
     public int RestaurantId { get; set; }
     public Restaurant Restaurant { get; set; }
-    public ICollection<MenuCategoryLang> MenuCategoryLanguage { get; set; }
-}
+/*    public ICollection<MenuCategoryLang> MenuCategoryLanguage { get; set; }
+*/}

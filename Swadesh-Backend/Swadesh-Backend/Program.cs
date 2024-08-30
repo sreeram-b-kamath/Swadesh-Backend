@@ -28,7 +28,7 @@ builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
-
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 DotNetEnv.Env.Load();
 
