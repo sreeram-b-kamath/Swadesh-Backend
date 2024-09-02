@@ -1,6 +1,8 @@
 ﻿using Application.Dto_s;
 using Application.Interface;
+using AutoMapper;
 using Domain.Models;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Models;
 using Shared.Data;
 using System;
@@ -14,9 +16,11 @@ namespace Application.Services
     public class PostToMenuService : IPostToMenuService
     {
         private readonly ApplicationDBContext _context;
-        public PostToMenuService(ApplicationDBContext context)
+        private readonly IMapper _mapper;
+        public PostToMenuService(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
 
         }
         public async Task<MenuItem> PostToMenuAsync(PostToMenuDto dto)
@@ -26,19 +30,27 @@ namespace Application.Services
             {
                 throw new Exception("Restaurant not found.");
             }
-
-            var menuItem = new MenuItem
+            var MenuCategoryId = await _context.menuCategories.FindAsync(dto.MenuCategoryId);
+            if (MenuCategoryId == null)
             {
-                Name = dto.Name,
-                Description = dto.Description,
-                Money = dto.Money,
-                RestaurantId = dto.RestaurantId,
-                MenuCategoryId = dto.MenuCategoryId,
+                throw new Exception("Restaurant not found.");
+            }
+            Console.WriteLine("entered validation");
+            var menuItem=_mapper.Map<MenuItem>(dto);
+           
+            
+            try
+            {
+                Console.WriteLine("entered into try");
+                await _context.menuItems.AddAsync(menuItem);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception("An error occurred while saving the menu item.", ex);
+            }
 
-                MenuItemIngredients = dto.IngredientIds.Select(id => new MenuItemIngredients { IngredientId = id }).ToList()
-            };
-            _context.menuItems.Add(menuItem);
-            await _context.SaveChangesAsync();
 
             return menuItem;
         }

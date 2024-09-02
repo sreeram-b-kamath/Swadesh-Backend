@@ -27,19 +27,19 @@ public class MenuItemConfig : IEntityTypeConfiguration<MenuItem>
         .IsRequired();
 
        /* builder.Property(x => x.Currency)
-        .IsRequired();
-       
+        .IsRequired();*/
+
         builder.Property(x => x.Active)
         .HasDefaultValue(true);
 
-        builder.HasMany(x => x.MenuItemslang)
+     /*   builder.HasMany(x => x.MenuItemslang)
        .WithOne(x => x.MenuItems)
        .HasForeignKey(x => x.MenuItemsId)
-       .OnDelete(DeleteBehavior.Cascade);
+       .OnDelete(DeleteBehavior.Cascade);*/
 
         builder.HasMany(x => x.MenuItemRatings)
         .WithOne(x => x.MenuItem)
         .HasForeignKey(x => x.MenuItemId)
         .OnDelete(DeleteBehavior.Cascade);
- */   }
+    }
 }
