@@ -2,6 +2,7 @@
 using Models;
 using Dtos;
 using Shared;
+using Application.Dto_s;
 
 namespace Swadesh_Backend
 {
@@ -10,6 +11,7 @@ namespace Swadesh_Backend
         public MappingConfig() 
         {
             CreateMap<Restaurant, RestaurantDto>().ReverseMap();
+            CreateMap<MenuItem, PostToMenuDto>().ReverseMap();
         }
     }
 }
