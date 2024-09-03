@@ -35,13 +35,12 @@ namespace Application.Services
             {
                 throw new Exception("Restaurant not found.");
             }
-            Console.WriteLine("entered validation");
             var menuItem=_mapper.Map<MenuItem>(dto);
-           
-            
+            menuItem.uid = Guid.NewGuid();
+
+
             try
             {
-                Console.WriteLine("entered into try");
                 await _context.menuItems.AddAsync(menuItem);
                 await _context.SaveChangesAsync();
             }
