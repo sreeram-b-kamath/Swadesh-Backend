@@ -11,6 +11,7 @@ namespace Swadesh_Backend
         public MappingConfig() 
         {
             CreateMap<Restaurant, RestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RestuarantUserGetDto>().ReverseMap();
             CreateMap<MenuItem, PostToMenuDto>().ReverseMap();
         }
     }
