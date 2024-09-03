@@ -44,6 +44,8 @@ public class ApplicationDBContext : IdentityDbContext<User, IdentityRole<int>, i
         modelBuilder.ApplyConfiguration(new RestaurantLangsConfig());
         modelBuilder.ApplyConfiguration(new MenuItemRatingConfig());
         modelBuilder.ApplyConfiguration(new MenuItemIngredientConfig());
+        modelBuilder.ApplyConfiguration(new IngredientConfig());
+
     }
 }
 
