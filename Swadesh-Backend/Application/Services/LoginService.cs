@@ -23,7 +23,7 @@ public class LoginService : ILoginService
         _logger = logger;
     }
 
-    public async Task<string> AuthenticateUserAsync(LoginDto loginDto)
+    public async Task<UserDto> AuthenticateUserAsync(LoginDto loginDto)
     {
         try
         {
@@ -55,26 +55,15 @@ public class LoginService : ILoginService
             _logger.LogInformation("User with email {Email} authenticated successfully.", loginDto.Email);
 
             var userRoles = await _userManager.GetRolesAsync(user);
-            var authClaims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email)
-        };
 
-            authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var loginResponse = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Role = user.Role,
+            };
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                expires: DateTime.Now.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"])),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                    SecurityAlgorithms.HmacSha256)
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return loginResponse;
         }
         catch (ArgumentException ex)
         {
