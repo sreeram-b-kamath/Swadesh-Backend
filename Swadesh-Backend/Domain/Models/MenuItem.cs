@@ -20,16 +20,17 @@ public class MenuItem
     public MenuCategory MenuCategory { get; set; }
     public ICollection<MenuItemIngredients> MenuItemIngredients { get; set; }
     public ICollection<MenuItemRating> MenuItemRatings { get; set; }
-
-
-   /* public string[] Images { get; set; }
-    public string Currency { get; set; }
-    public int Rating { get; set; }
     public bool Active { get; set; }
-    public int Order { get; set; }
-    public bool InStock { get; set; }
-    public ICollection<MenuItemLang> MenuItemslang { get; set; }
-    public ICollection<MenuItemRating> MenuItemRatings { get; set; }*/
+    
+
+    /* public string[] Images { get; set; }
+     public string Currency { get; set; }
+     public int Rating { get; set; }
+
+     public int Order { get; set; }
+     public bool InStock { get; set; }
+     public ICollection<MenuItemLang> MenuItemslang { get; set; }
+     */
 
 
 
