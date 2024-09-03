@@ -7,11 +7,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Swadesh-Backend/Infrastructure/Migrations/20240829050818_initialmigration.cs
+
     public partial class initialmigration : Migration
-========
-    public partial class AddedIngredientsTable : Migration
->>>>>>>> b555751daafa89944cb19670eff7cf59b54baf37:Swadesh-Backend/Infrastructure/Migrations/20240829074138_AddedIngredientsTable.cs
+
+
+
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

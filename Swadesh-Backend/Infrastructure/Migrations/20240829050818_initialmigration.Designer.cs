@@ -11,14 +11,12 @@ using Shared.Data;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDBContext))]
-<<<<<<<< HEAD:Swadesh-Backend/Infrastructure/Migrations/20240829050818_initialmigration.Designer.cs
+
     [Migration("20240829050818_initialmigration")]
-    partial class initialmigration
-========
-    [Migration("20240829074138_AddedIngredientsTable")]
-    partial class AddedIngredientsTable
->>>>>>>> b555751daafa89944cb19670eff7cf59b54baf37:Swadesh-Backend/Infrastructure/Migrations/20240829074138_AddedIngredientsTable.Designer.cs
+    partial class initialmigration :Migration
+
+   /* [Migration("20240829074138_AddedIngredientsTable")]*/
+
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -992,5 +990,7 @@ namespace Infrastructure.Migrations
                 });
 #pragma warning restore 612, 618
         }
+
+        
     }
 }

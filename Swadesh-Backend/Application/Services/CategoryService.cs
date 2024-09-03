@@ -82,18 +82,20 @@ namespace Application.Services
         {
             try
             {
-                int maxId = await _context.menuCategories.MaxAsync(c => c.Id);
+               
                 var category = new MenuCategory
                 {
-                    Id= maxId+1,
+                    
                     Name = categoryDto.Name,
                     Active = categoryDto.Active,
                     RestaurantId = categoryDto.RestaurantId,
                     Uid = Guid.NewGuid()
                 };
-                _context.menuCategories.Add(category);
 
-                return await _context.SaveChangesAsync() > 0;
+                await _context.menuCategories.AddAsync(category);
+                await _context.SaveChangesAsync();
+
+                return true;
 
             }
             catch (Exception ex)
