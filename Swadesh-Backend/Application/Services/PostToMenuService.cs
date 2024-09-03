@@ -33,7 +33,7 @@ namespace Application.Services
             var MenuCategoryId = await _context.menuCategories.FindAsync(dto.MenuCategoryId);
             if (MenuCategoryId == null)
             {
-                throw new Exception("Restaurant not found.");
+                throw new Exception("category not found.");
             }
             var menuItem=_mapper.Map<MenuItem>(dto);
             menuItem.uid = Guid.NewGuid();

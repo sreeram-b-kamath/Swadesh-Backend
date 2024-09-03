@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shared.Data;
@@ -11,9 +12,11 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240903102541_SeedingIngredientTableV1.4")]
+    partial class SeedingIngredientTableV14
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,7 +281,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RestaurantId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("Uid")
@@ -289,6 +292,9 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.HasIndex("Uid")
+                        .IsUnique();
+
+                    b.HasIndex("Name", "RestaurantId")
                         .IsUnique();
 
                     b.ToTable("menuCategories");
@@ -795,9 +801,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.MenuCategory", b =>
                 {
-                    b.HasOne("Models.Restaurant", null)
+                    b.HasOne("Models.Restaurant", "Restaurant")
                         .WithMany("MenuCategories")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("Models.MenuCategoryLang", b =>
