@@ -23,10 +23,10 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
         builder.Property(x => x.InitialLogin)
         .HasDefaultValue(true);
 
-        builder.HasMany(x => x.MenuCategories)
+       /* builder.HasMany(x => x.MenuCategories)
         .WithOne(x => x.Restaurant)
         .HasForeignKey(x => x.RestaurantId)
-        .OnDelete(DeleteBehavior.Cascade);
+        .OnDelete(DeleteBehavior.Cascade);*/
 
         builder.HasMany(x => x.MenuFilters)
         .WithOne(x => x.Restaurant)
