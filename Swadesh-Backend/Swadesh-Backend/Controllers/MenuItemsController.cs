@@ -9,10 +9,10 @@ namespace Swadesh_Backend.Controllers
     [Route("api/[controller]")]
     public class MenuItemsController:ControllerBase
     {
-        private readonly IPostToMenuService _postToMenuService;
-        public MenuItemsController(IPostToMenuService postToMenuService )
+        private readonly IMenuItemService _menuItemService;
+        public MenuItemsController(IMenuItemService menuItemService )
         {
-            _postToMenuService = postToMenuService;
+            _menuItemService = menuItemService;
             
         }
         [HttpPost("PostToMenuAsync")]
@@ -20,7 +20,7 @@ namespace Swadesh_Backend.Controllers
         {
             try
             {
-                var menuItem = await _postToMenuService.PostToMenuAsync(dto);
+                var menuItem = await _menuItemService.PostToMenuAsync(dto);
                 return Ok(menuItem);
             }
             catch (Exception ex)
@@ -28,5 +28,29 @@ namespace Swadesh_Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("ByRestaraunt/{restarauntId}")]
+        public async Task<ActionResult<List<GetMenuItemDto>>> GetMenuItemByRestarauntId(int restarauntId)
+        {
+            var menuItems=await _menuItemService.GetMenuItemsByRestarauntIdAsync(restarauntId);
+            if (menuItems == null) { 
+                return NotFound();
+            }
+            return Ok(menuItems);
+
+        }
+        [HttpDelete("{menuItemId}")]
+        public async Task<IActionResult> DeleteMenuItemAsync(int menuItemId)
+        {
+            var isDeleted=await _menuItemService.DeleteMenuItemAsync(menuItemId);
+            if (!isDeleted)
+            {
+                return NotFound("Menu item not found");
+            }
+
+            return Ok("Menu item deleted successfully");
+        }
     }
-}
+
+    }
+
