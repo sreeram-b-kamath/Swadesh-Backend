@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Shared;
+using Shared.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,12 +16,14 @@ public class LoginService : ILoginService
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
     private readonly ILogger<LoginService> _logger;
+    private readonly ApplicationDBContext _dbContext;
 
-    public LoginService(UserManager<User> userManager, IConfiguration configuration, ILogger<LoginService> logger)
+    public LoginService(UserManager<User> userManager, IConfiguration configuration, ILogger<LoginService> logger, ApplicationDBContext dBContext)
     {
         _userManager = userManager;
         _configuration = configuration;
         _logger = logger;
+        _dbContext = dBContext;
     }
 
     public async Task<UserDto> AuthenticateUserAsync(LoginDto loginDto)
@@ -54,13 +57,21 @@ public class LoginService : ILoginService
 
             _logger.LogInformation("User with email {Email} authenticated successfully.", loginDto.Email);
 
+            var restaurant = await _dbContext.restaurants.SingleOrDefaultAsync(r => r.UserId == user.Id);
+            if (restaurant == null)
+            {
+                _logger.LogWarning("No restaurant found for user with email {Email}.", loginDto.Email);
+                throw new Exception("Restaurant not found for this user.");
+            }
+
             var userRoles = await _userManager.GetRolesAsync(user);
 
             var loginResponse = new UserDto
             {
                 Id = user.Id,
+                RestaurantId = restaurant.Id,  // Get the RestaurantId from the associated restaurant
                 Email = user.Email,
-                Role = user.Role,
+                Role = user.Role,  // Assuming the user has one role
             };
 
             return loginResponse;
