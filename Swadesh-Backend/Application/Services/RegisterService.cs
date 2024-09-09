@@ -42,7 +42,8 @@ public class RegisterService : IRegisterService
                 UserName = email,
                 Email = email,
                 OTP = otp,
-                OtpExpiry = DateTime.UtcNow.AddMinutes(10), // OTP valid for 10 minutes
+                OtpExpiry = DateTime.UtcNow.AddMinutes(10),
+                Role = Enums.UserRoles.Chef
             };
             _context.Users.Add(user);
         }

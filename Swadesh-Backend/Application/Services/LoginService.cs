@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Shared;
+using Shared.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,15 +16,17 @@ public class LoginService : ILoginService
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
     private readonly ILogger<LoginService> _logger;
+    private readonly ApplicationDBContext _dbContext;
 
-    public LoginService(UserManager<User> userManager, IConfiguration configuration, ILogger<LoginService> logger)
+    public LoginService(UserManager<User> userManager, IConfiguration configuration, ILogger<LoginService> logger, ApplicationDBContext dBContext)
     {
         _userManager = userManager;
         _configuration = configuration;
         _logger = logger;
+        _dbContext = dBContext;
     }
 
-    public async Task<string> AuthenticateUserAsync(LoginDto loginDto)
+    public async Task<UserDto> AuthenticateUserAsync(LoginDto loginDto)
     {
         try
         {
@@ -54,27 +57,27 @@ public class LoginService : ILoginService
 
             _logger.LogInformation("User with email {Email} authenticated successfully.", loginDto.Email);
 
+            var restaurant = await _dbContext.restaurants.SingleOrDefaultAsync(r => r.UserId == user.Id);
+            if (restaurant == null)
+            {
+                _logger.LogWarning("No restaurant found for user with email {Email}.", loginDto.Email);
+                throw new Exception("Restaurant not found for this user.");
+            }
+
             var userRoles = await _userManager.GetRolesAsync(user);
-            var authClaims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email)
-        };
 
-            authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var token = GenerateJwtToken(user, userRoles);
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                expires: DateTime.Now.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"])),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                    SecurityAlgorithms.HmacSha256)
-            );
+            var loginResponse = new UserDto
+            {
+                Id = user.Id,
+                RestaurantId = restaurant.Id,
+                Email = user.Email,
+                Role = user.Role,
+                JwtToken = token // Add the JWT token here
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return loginResponse;
         }
         catch (ArgumentException ex)
         {
@@ -93,4 +96,33 @@ public class LoginService : ILoginService
         }
     }
 
+    private string GenerateJwtToken(User user, IList<string> roles)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName)
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var tokenDescriptor = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpireMinutes"])),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+    }
 }

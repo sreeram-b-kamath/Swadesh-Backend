@@ -78,10 +78,10 @@ namespace Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var token = await _loginService.AuthenticateUserAsync(loginDto);
-            if (token != null)
+            var result = await _loginService.AuthenticateUserAsync(loginDto);
+            if (result != null)
             {
-                return Ok(new { token });
+                return Ok(result);
             }
 
             return Unauthorized();
