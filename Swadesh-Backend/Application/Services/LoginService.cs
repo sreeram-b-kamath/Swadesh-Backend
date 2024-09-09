@@ -66,12 +66,15 @@ public class LoginService : ILoginService
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
+            var token = GenerateJwtToken(user, userRoles);
+
             var loginResponse = new UserDto
             {
                 Id = user.Id,
-                RestaurantId = restaurant.Id,  // Get the RestaurantId from the associated restaurant
+                RestaurantId = restaurant.Id,
                 Email = user.Email,
-                Role = user.Role,  // Assuming the user has one role
+                Role = user.Role,
+                JwtToken = token // Add the JWT token here
             };
 
             return loginResponse;
@@ -93,4 +96,33 @@ public class LoginService : ILoginService
         }
     }
 
+    private string GenerateJwtToken(User user, IList<string> roles)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName)
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var tokenDescriptor = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpireMinutes"])),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+    }
 }

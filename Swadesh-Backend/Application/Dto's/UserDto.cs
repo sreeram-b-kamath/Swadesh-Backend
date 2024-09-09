@@ -9,4 +9,5 @@ public class UserDto
     public int RestaurantId { get; set; }
     public string Email { get; set; }
     public UserRoles Role { get; set; }
+    public string JwtToken { get; set; }
 }
