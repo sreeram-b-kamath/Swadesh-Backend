@@ -1,3 +1,4 @@
+using Models;
 using Shared;
 namespace Dtos;
 
@@ -20,6 +21,6 @@ public class RestaurantDto
     public string State { get; set; }
     public string Contact { get; set; }
     public Guid Session { get; set; }
-    public List<Filters> FiltersDtos { get; set; }
+    public List<MenuFilter> FiltersDtos { get; set; }
     public List<MenuCategoryDto> MenuCategoryDtos { get; set; }
 }

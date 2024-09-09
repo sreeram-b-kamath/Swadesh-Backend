@@ -13,23 +13,36 @@ using Models;
 using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Swadesh_Backend;
+using System.Text.Json.Serialization;
 
 // Load environment variables
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
 builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
-builder.Services.AddScoped<IPostToMenuService, PostToMenuService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IIngredientsService, IngredientsService>();
+builder.Services.AddScoped<IRestrictionService, RestrictionService>();
+
 
 // Environment variables for email configuration
 var emailUsername = Environment.GetEnvironmentVariable("EMAIL_USERNAME");
