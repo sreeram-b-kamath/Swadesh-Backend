@@ -11,13 +11,11 @@ using Shared.Data;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDBContext))]
 
-   
-  
+    [Migration("20240829050818_initialmigration")]
+    partial class initialmigration :Migration
 
-    [Migration("20240829074138_AddedIngredientsTable")]
-    partial class AddedIngredientsTable
+   /* [Migration("20240829074138_AddedIngredientsTable")]*/
 
     {
         /// <inheritdoc />
@@ -992,5 +990,7 @@ namespace Infrastructure.Migrations
                 });
 #pragma warning restore 612, 618
         }
+
+        
     }
 }

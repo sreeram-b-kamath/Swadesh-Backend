@@ -12,13 +12,8 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-
-   
-  
-
-    [Migration("20240829074138_AddedIngredientsTable")]
-    partial class AddedIngredientsTable
-
+    [Migration("20240903104139_SeedingIngredientTableV1.5")]
+    partial class SeedingIngredientTableV15
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +44,20 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Vegetables",
+                            image = "tomato.png"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Chicken",
+                            image = "cheese.png"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Models.MenuItemIngredients", b =>
@@ -272,7 +281,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RestaurantId")
+                    b.Property<int?>("RestaurantId")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("Uid")
@@ -283,9 +292,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.HasIndex("Uid")
-                        .IsUnique();
-
-                    b.HasIndex("Name", "RestaurantId")
                         .IsUnique();
 
                     b.ToTable("menuCategories");
@@ -405,20 +411,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string[]>("Images")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.Property<bool>("InStock")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("MenuCategoryId")
                         .HasColumnType("integer");
@@ -433,9 +428,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
 
                     b.Property<string>("PrimaryImage")
                         .IsRequired()
@@ -806,25 +798,21 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.MenuCategory", b =>
                 {
-                    b.HasOne("Models.Restaurant", "Restaurant")
+                    b.HasOne("Models.Restaurant", null)
                         .WithMany("MenuCategories")
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Restaurant");
+                        .HasForeignKey("RestaurantId");
                 });
 
             modelBuilder.Entity("Models.MenuCategoryLang", b =>
                 {
                     b.HasOne("Models.MenuCategory", "MenuCategory")
-                        .WithMany("MenuCategoryLanguage")
+                        .WithMany()
                         .HasForeignKey("MenuCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.Restaurant", "Restaurant")
-                        .WithMany("MenuCategoryLangs")
+                        .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -854,7 +842,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Models.Restaurant", "Restaurant")
-                        .WithMany("MenuFiltersLangs")
+                        .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -886,13 +874,13 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Models.MenuItemLang", b =>
                 {
                     b.HasOne("Models.MenuItem", "MenuItems")
-                        .WithMany("MenuItemslang")
+                        .WithMany()
                         .HasForeignKey("MenuItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.Restaurant", "Restaurant")
-                        .WithMany("MenuItemsLangs")
+                        .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -935,7 +923,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Models.RestaurantLang", b =>
                 {
                     b.HasOne("Models.Restaurant", "Restaurant")
-                        .WithMany("RestaurantLang")
+                        .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -953,11 +941,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("MasterFilterLanguage");
                 });
 
-            modelBuilder.Entity("Models.MenuCategory", b =>
-                {
-                    b.Navigation("MenuCategoryLanguage");
-                });
-
             modelBuilder.Entity("Models.MenuFilter", b =>
                 {
                     b.Navigation("MenuFilterlang");
@@ -968,27 +951,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("MenuItemIngredients");
 
                     b.Navigation("MenuItemRatings");
-
-                    b.Navigation("MenuItemslang");
                 });
 
             modelBuilder.Entity("Models.Restaurant", b =>
                 {
                     b.Navigation("MenuCategories");
 
-                    b.Navigation("MenuCategoryLangs");
-
                     b.Navigation("MenuFilters");
-
-                    b.Navigation("MenuFiltersLangs");
 
                     b.Navigation("MenuItemRatings");
 
                     b.Navigation("MenuItems");
-
-                    b.Navigation("MenuItemsLangs");
-
-                    b.Navigation("RestaurantLang");
                 });
 #pragma warning restore 612, 618
         }

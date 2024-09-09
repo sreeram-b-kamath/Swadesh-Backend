@@ -21,7 +21,7 @@ public class MenuItem
     public ICollection<MenuItemIngredients> MenuItemIngredients { get; set; }
     public ICollection<MenuItemRating> MenuItemRatings { get; set; }
     public bool Active { get; set; }
-    
+
 
     /* public string[] Images { get; set; }
      public string Currency { get; set; }

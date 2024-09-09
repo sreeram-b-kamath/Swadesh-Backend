@@ -16,7 +16,7 @@ public class MenuCategoryConfig : IEntityTypeConfiguration<MenuCategory>
         .IsRequired();
 
         builder.HasIndex(x => x.Uid)
-        .IsUnique();        
+        .IsUnique();
 
         builder.Property(x => x.RestaurantId)
         .IsRequired();

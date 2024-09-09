@@ -8,7 +8,9 @@ namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
 
-    public partial class AddedIngredientsTable : Migration
+    public partial class initialmigration : Migration
+
+
 
     {
         /// <inheritdoc />
