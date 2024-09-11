@@ -22,7 +22,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-// Add services to the container.
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -40,6 +39,8 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<IMenuFilterService, MenuFilterService>();
 builder.Services.AddScoped<IIngredientsService, IngredientsService>();
 builder.Services.AddScoped<IRestrictionService, RestrictionService>();
 
