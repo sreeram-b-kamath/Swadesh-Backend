@@ -8,7 +8,6 @@ namespace Application.Dto_s
 {
     public class CreateMenuCategoryDto
     {
-      
         public string Name { get; set; }    
         public bool Active { get; set; }
         public int RestaurantId { get; set; }
