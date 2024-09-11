@@ -12,8 +12,8 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240831043859_reseted")]
-    partial class reseted
+    [Migration("20240903045835_ressssst")]
+    partial class ressssst
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,20 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Vegetables",
+                            image = "tomato.png"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Chicken",
+                            image = "cheese.png"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Models.MenuItemIngredients", b =>
@@ -395,6 +409,11 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -515,15 +534,12 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Contact")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Cuisine")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("InitialLogin")
@@ -532,7 +548,6 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Logo")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -540,11 +555,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("OwnerName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Uid")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")

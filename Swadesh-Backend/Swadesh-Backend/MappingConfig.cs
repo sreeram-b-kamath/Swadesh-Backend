@@ -14,6 +14,9 @@ namespace Swadesh_Backend
             CreateMap<Restaurant, RestaurantDto>().ReverseMap();
             CreateMap<Restaurant, RestuarantUserGetDto>().ReverseMap();
             CreateMap<MenuItem, PostToMenuDto>().ReverseMap();
+            CreateMap<MenuItem, MenuItemResponse>()
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.MenuCategory.Name));
+            CreateMap<MenuCategory, CategoryMenuItemsResponseDto>();
             CreateMap<MenuItem, GetMenuItemDto>()
                 .ForMember(dest => dest.IngredientIds, opt => opt.MapFrom(src => src.MenuItemIngredients.Select(mi => mi.IngredientId).ToArray()));
             CreateMap<Ingredients, GetingredientsDto>().ReverseMap();
