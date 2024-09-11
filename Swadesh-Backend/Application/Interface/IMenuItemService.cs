@@ -14,7 +14,6 @@ namespace Application.Interface
         Task<MenuItem> PostToMenuAsync(PostToMenuDto dto);
         Task<List<GetMenuItemDto>> GetMenuItemsByRestarauntIdAsync(int restarauntId);
         Task<bool> DeleteMenuItemAsync(int menuItemId);
-        Task<IEnumerable<MenuFilterIdNameDto>> GetMenuFiltersByRestaurantIdAsync(int restaurantId);
         Task<List<CategoryMenuItemsResponseDto>> GetMenuItemsByFiltersAsync(MenuItemsRequest request);
 
 
