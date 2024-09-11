@@ -14,8 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
-var builder = WebApplication.CreateBuilder(args);
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -18,6 +18,11 @@ namespace Swadesh_Backend.Controllers
         [HttpPost("PostToMenuAsync")]
         public async Task<IActionResult> PostToMenuAsync([FromBody] PostToMenuDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var menuItem = await _menuItemService.PostToMenuAsync(dto);
