@@ -531,15 +531,12 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Contact")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Cuisine")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("InitialLogin")
@@ -548,7 +545,6 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Logo")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -556,11 +552,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("OwnerName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Uid")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")

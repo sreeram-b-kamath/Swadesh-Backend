@@ -13,6 +13,12 @@ namespace Swadesh_Backend
             CreateMap<Restaurant, RestaurantDto>().ReverseMap();
             CreateMap<Restaurant, RestuarantUserGetDto>().ReverseMap();
             CreateMap<MenuItem, PostToMenuDto>().ReverseMap();
+
+            CreateMap<MenuItem, MenuItemResponse>()
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.MenuCategory.Name));
+
+            // Map Category to CategoryMenuItemsResponse
+            CreateMap<MenuCategory, CategoryMenuItemsResponseDto>();
         }
     }
 }
