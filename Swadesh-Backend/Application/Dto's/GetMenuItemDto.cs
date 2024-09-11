@@ -10,6 +10,7 @@ namespace Application.Dto_s
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public string PrimaryImage { get; set; }
         public decimal Money { get; set; }
         public int MenuCategoryId { get; set; }

@@ -17,5 +17,8 @@ namespace Application.Interface
         Task<List<CategoryMenuItemsResponseDto>> GetMenuItemsByFiltersAsync(MenuItemsRequest request);
 
 
+        Task<bool> UpdateMenuItemAsync(int menuItemId, PostToMenuDto dto);
+        Task<GetMenuItemDto> GetMenuItemByIdAsync(int menuItemId);
+
     }
 }
