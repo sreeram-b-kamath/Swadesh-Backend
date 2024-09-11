@@ -16,7 +16,7 @@ namespace Application.Interface
         Task<bool> DeleteMenuItemAsync(int menuItemId);
         Task<IEnumerable<MenuFilterIdNameDto>> GetMenuFiltersByRestaurantIdAsync(int restaurantId);
         Task<List<CategoryMenuItemsResponseDto>> GetMenuItemsByFiltersAsync(MenuItemsRequest request);
-
+..........
 
     }
 }
