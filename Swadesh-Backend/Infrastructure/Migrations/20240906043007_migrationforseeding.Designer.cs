@@ -12,8 +12,8 @@ using Shared.Data;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240904111337_SeedingIngredientTableV1.7")]
-    partial class SeedingIngredientTableV17
+    [Migration("20240906043007_migrationforseeding")]
+    partial class migrationforseeding
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -382,7 +382,6 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Icon")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -444,6 +443,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Description")
                         .IsRequired()

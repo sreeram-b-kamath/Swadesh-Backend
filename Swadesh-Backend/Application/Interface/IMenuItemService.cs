@@ -14,5 +14,8 @@ namespace Application.Interface
         Task<List<GetMenuItemDto>> GetMenuItemsByRestarauntIdAsync(int restarauntId);
         Task<bool> DeleteMenuItemAsync(int menuItemId);
 
+        Task<bool> UpdateMenuItemAsync(int menuItemId, PostToMenuDto dto);
+        Task<GetMenuItemDto> GetMenuItemByIdAsync(int menuItemId);
+
     }
 }

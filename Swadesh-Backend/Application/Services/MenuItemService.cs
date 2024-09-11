@@ -96,5 +96,47 @@ namespace Application.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> UpdateMenuItemAsync(int menuItemId, PostToMenuDto dto)
+        {
+            var menuItem = await _context.menuItems.FindAsync(menuItemId);
+            if (menuItem == null)
+            {
+                return false; // Menu item not found
+            }
+
+            // Update the fields
+            menuItem.Name = dto.Name;
+            menuItem.PrimaryImage = dto.PrimaryImage;
+            menuItem.Description = dto.Description;
+            menuItem.Money = dto.Money;
+
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<GetMenuItemDto> GetMenuItemByIdAsync(int menuItemId)
+        {
+            var menuItem = await _context.menuItems
+                                         .Where(m => m.Id == menuItemId)
+                                         .Include(m => m.MenuItemIngredients) // Include the ingredients relation
+                                         .FirstOrDefaultAsync();
+
+            if (menuItem == null)
+            {
+                return null; // Menu item not found
+            }
+
+            // Map to GetMenuItemDto
+            var menuItemDto = _mapper.Map<GetMenuItemDto>(menuItem);
+
+            // Map the ingredient IDs
+            menuItemDto.IngredientIds = menuItem.MenuItemIngredients.Select(mi => mi.IngredientId).ToList();
+
+            return menuItemDto;
+        }
+
     }
 }
