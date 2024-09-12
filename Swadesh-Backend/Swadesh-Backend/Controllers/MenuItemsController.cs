@@ -20,6 +20,11 @@ namespace Swadesh_Backend.Controllers
         [HttpPost("PostToMenuAsync")]
         public async Task<IActionResult> PostToMenuAsync([FromBody] PostToMenuDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var menuItem = await _menuItemService.PostToMenuAsync(dto);
@@ -55,7 +60,48 @@ namespace Swadesh_Backend.Controllers
 
             return Ok("Menu item deleted successfully");
         }
-    }
+
+        [HttpPatch("{menuItemId}")]
+        public async Task<IActionResult> UpdateMenuItemAsync(int menuItemId, [FromBody] PostToMenuDto dto)
+        {
+            try
+            {
+                var isUpdated = await _menuItemService.UpdateMenuItemAsync(menuItemId, dto);
+                if (!isUpdated)
+                {
+                    return NotFound("Menu item not found");
+                }
+
+                return Ok("Menu item updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{menuItemId}")]
+        public async Task<IActionResult> GetMenuItemByMenuIdAsync(int menuItemId)
+        {
+            try
+            {
+               
+                var menuItem = await _menuItemService.GetMenuItemByIdAsync(menuItemId);
+
+                if (menuItem == null)
+                {
+                    return NotFound("Menu item not found");
+                }
+
+                return Ok(menuItem);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
+
+}
 

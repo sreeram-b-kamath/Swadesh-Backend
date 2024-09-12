@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using Enums;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Shared;
 public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
@@ -22,6 +23,8 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
 
         builder.Property(x => x.InitialLogin)
         .HasDefaultValue(true);
+
+        
 
        /* builder.HasMany(x => x.MenuCategories)
         .WithOne(x => x.Restaurant)

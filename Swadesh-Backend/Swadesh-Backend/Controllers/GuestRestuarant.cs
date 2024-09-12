@@ -1,6 +1,8 @@
 ﻿using Application.Interface;
 using Microsoft.AspNetCore.Authorization;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 
 namespace Swadesh_Backend.Controllers
 {
@@ -9,10 +11,14 @@ namespace Swadesh_Backend.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantService _restaurantService;
+        private readonly IMenuItemService _menuItemService;
+        private readonly IMenuFilterService _menuFilterService;
 
-        public RestaurantController(IRestaurantService restaurantService)
+        public RestaurantController(IMenuFilterService menuFilterService, IRestaurantService restaurantService, IMenuItemService menuItemService)
         {
             _restaurantService = restaurantService;
+            _menuItemService = menuItemService;
+            _menuFilterService = menuFilterService;
         }
 
         [Authorize]
@@ -28,6 +34,34 @@ namespace Swadesh_Backend.Controllers
 
             return Ok(restaurantDto);
         }
+
+        [HttpPost("Filter")]
+        public async Task<IActionResult> GetMenuItemsByFilters([FromBody] MenuItemsRequest request)
+        {
+            var result = await _menuItemService.GetMenuItemsByFiltersAsync(request);
+
+            if (!result.Any())
+            {
+                return NotFound(new { Message = "No menu items found matching the given filters." });
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("Filters/{id}")]
+
+        public async Task<IActionResult> GetFilters(int id)
+        {
+            var result = await _menuFilterService.GetMenuFiltersByRestaurantIdAsync(id);
+
+            return Ok(result);
+        }
+
+
+
     }
 
 }
+
+
+

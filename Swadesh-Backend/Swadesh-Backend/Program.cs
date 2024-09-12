@@ -10,6 +10,9 @@ using Interface.EmailService;
 using Application.Interface;
 using ComplianceCalendar.Services.EmailService;
 using Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Swadesh_Backend;
@@ -22,7 +25,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-// Add services to the container.
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -40,6 +42,8 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<IMenuFilterService, MenuFilterService>();
 builder.Services.AddScoped<IIngredientsService, IngredientsService>();
 builder.Services.AddScoped<IRestrictionService, RestrictionService>();
 
