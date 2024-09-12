@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Application.Dto_s;
+using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,4 +20,7 @@ namespace Shared;
     public string PrimaryImage { get; set; }
 
     public string Description { get; set; }
+    public List<IngredientResponse> Ingredients { get; set; }
+
+
 }
