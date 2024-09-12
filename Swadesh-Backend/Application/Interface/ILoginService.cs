@@ -9,6 +9,6 @@ namespace Application.Interface
 {
     public interface ILoginService
     {
-        Task<UserDto> AuthenticateUserAsync(LoginDto loginDto);
+        Task<Object> AuthenticateUserAsync(LoginDto loginDto);
     }
 }

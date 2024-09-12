@@ -1,6 +1,7 @@
 ﻿using Application.Dto_s;
 using Application.Interface;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Swadesh_Backend.Controllers
@@ -14,6 +15,8 @@ namespace Swadesh_Backend.Controllers
         {
             _ingredientsService = ingredientsService;
         }
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<GetingredientsDto>>> GetIngredientsAsync()
         {

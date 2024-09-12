@@ -26,9 +26,6 @@
                 _context = context;
                 _mapper = mapper;
             }
-
-        
-
             public async Task<RestuarantUserGetDto> GetRestaurantByIdAsync(int id)
             {
                 Restaurant restaurant = await _context.restaurants

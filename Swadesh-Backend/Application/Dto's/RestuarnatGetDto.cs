@@ -18,5 +18,5 @@ public class RestuarantUserGetDto
     public bool Active { get; set; }
     public bool InitialLogin { get; set; }
     public int UserId { get; set; }
-    
+    public string Address { get; set; }  
 }
