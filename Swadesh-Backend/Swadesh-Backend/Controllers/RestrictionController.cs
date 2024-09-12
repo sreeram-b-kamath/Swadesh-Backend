@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Interface;
 using Microsoft.Extensions.Logging;
 using Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -22,6 +23,7 @@ namespace Api.Controllers
         }
 
         // GET: api/Restriction/{restaurantId}
+        [Authorize]
         [HttpGet("{restaurantId}")]
         public async Task<IActionResult> GetRestrictionsByRestaurantId(int restaurantId)
         {
@@ -43,7 +45,7 @@ namespace Api.Controllers
             }
         }
 
-        // POSt
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddRestriction([FromBody] MenuFilterDto restrictionDto)
         {
@@ -65,7 +67,7 @@ namespace Api.Controllers
             }
         }
 
-        
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRestriction(int id)
         {

@@ -1,6 +1,7 @@
 ﻿using Application.Dto_s;
 using Application.Interface;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Swadesh_Backend.Controllers
@@ -15,6 +16,7 @@ namespace Swadesh_Backend.Controllers
             _menuItemService = menuItemService;
             
         }
+        [Authorize]
         [HttpPost("PostToMenuAsync")]
         public async Task<IActionResult> PostToMenuAsync([FromBody] PostToMenuDto dto)
         {
@@ -34,6 +36,7 @@ namespace Swadesh_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("ByRestaraunt/{restarauntId}")]
         public async Task<ActionResult<List<GetMenuItemDto>>> GetMenuItemByRestarauntId(int restarauntId)
         {
@@ -44,6 +47,8 @@ namespace Swadesh_Backend.Controllers
             return Ok(menuItems);
 
         }
+
+        [Authorize]
         [HttpDelete("{menuItemId}")]
         public async Task<IActionResult> DeleteMenuItemAsync(int menuItemId)
         {

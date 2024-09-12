@@ -1,4 +1,5 @@
 ﻿using Application.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
@@ -20,6 +21,7 @@ namespace Swadesh_Backend.Controllers
             _menuFilterService = menuFilterService;
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRestaurantById(int id)
         {

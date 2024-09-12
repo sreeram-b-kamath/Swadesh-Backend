@@ -26,7 +26,7 @@ public class LoginService : ILoginService
         _dbContext = dBContext;
     }
 
-    public async Task<UserDto> AuthenticateUserAsync(LoginDto loginDto)
+    public async Task<object> AuthenticateUserAsync(LoginDto loginDto)
     {
         try
         {
@@ -58,26 +58,35 @@ public class LoginService : ILoginService
             _logger.LogInformation("User with email {Email} authenticated successfully.", loginDto.Email);
 
             var restaurant = await _dbContext.restaurants.SingleOrDefaultAsync(r => r.UserId == user.Id);
-            if (restaurant == null)
-            {
-                _logger.LogWarning("No restaurant found for user with email {Email}.", loginDto.Email);
-                throw new Exception("Restaurant not found for this user.");
-            }
-
             var userRoles = await _userManager.GetRolesAsync(user);
 
             var token = GenerateJwtToken(user, userRoles);
 
-            var loginResponse = new UserDto
+            // Check if the user is a super admin
+            if (userRoles.Contains("SuperAdmin"))
             {
-                Id = user.Id,
-                RestaurantId = restaurant.Id,
-                Email = user.Email,
-                Role = user.Role,
-                JwtToken = token // Add the JWT token here
-            };
-
-            return loginResponse;
+                // Return only the token, user ID, and email for super admins
+                var simplifiedResponse = new
+                {
+                    Token = token,
+                    UserId = user.Id,
+                    Email = user.Email
+                };
+                return simplifiedResponse;
+            }
+            else
+            {
+                // Return full UserDto for other users
+                var loginResponse = new UserDto
+                {
+                    Id = user.Id,
+                    RestaurantId = restaurant?.Id ?? 0, // Handle cases where restaurant might be null
+                    Email = user.Email,
+                    Role = user.Role, // Assuming only one role
+                    JwtToken = token
+                };
+                return loginResponse;
+            }
         }
         catch (ArgumentException ex)
         {

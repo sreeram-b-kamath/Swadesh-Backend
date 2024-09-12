@@ -99,7 +99,9 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateIssuerSigningKey = true,
+        ValidateAudience = true, // Ensure audience validation is enabled
         ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience, // Set the valid audience
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });

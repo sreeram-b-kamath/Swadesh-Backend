@@ -98,6 +98,7 @@ public class RegisterService : IRegisterService
             Address = registerDto.Address,
             Contact = registerDto.Contact,
             OwnerName = registerDto.OwnerName,
+            Active = true
         };
         _context.restaurants.Add(restaurant);
 

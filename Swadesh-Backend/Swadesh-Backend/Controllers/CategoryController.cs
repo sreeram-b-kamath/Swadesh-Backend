@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Application.Services;
 using Shared;
 using Application.Dto_s;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -21,9 +22,15 @@ namespace Api.Controllers
             _categoryService = categoryService;
             _logger = logger;
         }
+
+        [Authorize]
         [HttpGet("{restaurantId}")]
         public async Task<IActionResult> GetCategoriesByRestaurantId(int restaurantId)
         {
+            // Log the Authorization Header
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            _logger.LogInformation("Authorization Header: {AuthorizationHeader}", authorizationHeader);
+
             try
             {
                 var categories = await _categoryService.GetCategoriesByRestaurantIdAsync(restaurantId);
@@ -42,7 +49,7 @@ namespace Api.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpGet("category/{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
@@ -64,6 +71,7 @@ namespace Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] MenuCategoryDto categoryDto)
         {
@@ -90,6 +98,7 @@ namespace Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromBody] MenuCategoryDto categoryDto)
         {
@@ -116,6 +125,7 @@ namespace Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateCategoryActive(int id, [FromBody] UpdateCategoryActiveDto updateDto)
         {
@@ -142,7 +152,7 @@ namespace Api.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
