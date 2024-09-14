@@ -10,6 +10,7 @@ using Shared.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Interface.EmailService;
 
 public class LoginService : ILoginService
 {
@@ -17,16 +18,18 @@ public class LoginService : ILoginService
     private readonly IConfiguration _configuration;
     private readonly ILogger<LoginService> _logger;
     private readonly ApplicationDBContext _dbContext;
+    private readonly IEmailService _emailService;
 
-    public LoginService(UserManager<User> userManager, IConfiguration configuration, ILogger<LoginService> logger, ApplicationDBContext dBContext)
+    public LoginService(UserManager<User> userManager, IConfiguration configuration, ILogger<LoginService> logger, ApplicationDBContext dBContext, IEmailService emailService)
     {
         _userManager = userManager;
         _configuration = configuration;
         _logger = logger;
         _dbContext = dBContext;
+        _emailService = emailService;
     }
 
-    public async Task<object> AuthenticateUserAsync(LoginDto loginDto)
+    public async Task<string> InitiateLoginAsync(LoginDto loginDto)
     {
         try
         {
@@ -55,7 +58,53 @@ public class LoginService : ILoginService
                 throw new UnauthorizedAccessException("Invalid credentials.");
             }
 
-            _logger.LogInformation("User with email {Email} authenticated successfully.", loginDto.Email);
+            _logger.LogInformation("User with email {Email} authenticated successfully. Sending OTP.", loginDto.Email);
+
+            // Generate and send OTP
+            var otp = new Random().Next(1000, 9999);
+            user.OTP = otp;
+            user.OtpExpiry = DateTime.UtcNow.AddMinutes(10);
+            await _dbContext.SaveChangesAsync();
+
+            var emailSent = await _emailService.SendEmail(user, otp);
+            if (!emailSent)
+            {
+                _logger.LogError("Failed to send OTP email to {Email}.", loginDto.Email);
+                return "Faied ro send OTP mail";
+            }
+
+            return "OTP sent successfully. Please verify to complete login.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred in InitiateLoginAsync.");
+            return "An error occured";
+        }
+    }
+
+    public async Task<object> VerifyOtpAndCompleteLoginAsync(string email, string otp)
+    {
+        try
+        {
+            var normalizedEmail = email.Trim().Normalize().ToUpperInvariant();
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.NormalizedUserName == normalizedEmail);
+            if (user == null)
+            {
+                _logger.LogWarning("User with email {Email} not found during OTP verification.", email);
+                throw new UnauthorizedAccessException("Invalid email.");
+            }
+
+            if (user.OTP.ToString() != otp || user.OtpExpiry < DateTime.UtcNow)
+            {
+                _logger.LogWarning("Invalid or expired OTP for user with email {Email}.", email);
+                throw new UnauthorizedAccessException("Invalid or expired OTP.");
+            }
+
+            _logger.LogInformation("OTP verified successfully for user with email {Email}.", email);
+
+            // Clear OTP after successful verification
+            user.OTP = 0;
+            await _dbContext.SaveChangesAsync();
 
             var restaurant = await _dbContext.restaurants.SingleOrDefaultAsync(r => r.UserId == user.Id);
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -70,7 +119,8 @@ public class LoginService : ILoginService
                 {
                     Token = token,
                     UserId = user.Id,
-                    Email = user.Email
+                    Email = user.Email,
+                    Role = "SuperAdmin"
                 };
                 return simplifiedResponse;
             }
@@ -80,28 +130,18 @@ public class LoginService : ILoginService
                 var loginResponse = new UserDto
                 {
                     Id = user.Id,
-                    RestaurantId = restaurant?.Id ?? 0, // Handle cases where restaurant might be null
+                    RestaurantId = restaurant?.Id ?? 0,
                     Email = user.Email,
-                    Role = user.Role, // Assuming only one role
+                    Role = user.Role,
                     JwtToken = token
                 };
                 return loginResponse;
             }
         }
-        catch (ArgumentException ex)
-        {
-            _logger.LogError(ex, "Argument exception occurred in AuthenticateUserAsync.");
-            throw new ArgumentException("Invalid login details provided.");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogError(ex, "Unauthorized access exception occurred in AuthenticateUserAsync.");
-            throw new UnauthorizedAccessException("Authentication failed.");
-        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred in AuthenticateUserAsync.");
-            throw new Exception("An error occurred while processing your request.");
+            _logger.LogError(ex, "An error occurred in VerifyOtpAndCompleteLoginAsync.");
+            throw;
         }
     }
 
