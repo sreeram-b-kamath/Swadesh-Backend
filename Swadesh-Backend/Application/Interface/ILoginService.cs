@@ -1,14 +1,11 @@
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Models;
 using Shared;
-
-
+using System.Threading.Tasks;
 
 namespace Application.Interface
 {
     public interface ILoginService
     {
-        Task<Object> AuthenticateUserAsync(LoginDto loginDto);
+        Task<string> InitiateLoginAsync(LoginDto loginDto);
+        Task<object> VerifyOtpAndCompleteLoginAsync(string email, string otp);
     }
 }

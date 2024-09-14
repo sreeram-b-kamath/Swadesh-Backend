@@ -21,7 +21,6 @@ namespace Swadesh_Backend.Controllers
             _menuFilterService = menuFilterService;
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRestaurantById(int id)
         {

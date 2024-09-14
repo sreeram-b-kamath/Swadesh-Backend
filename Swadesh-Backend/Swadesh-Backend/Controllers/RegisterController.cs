@@ -5,7 +5,6 @@ using Application.Services;
 using Microsoft.Extensions.Logging;
 using Application.Interface;
 using Shared;
-
 namespace Api.Controllers
 {
     [ApiController]
@@ -15,14 +14,12 @@ namespace Api.Controllers
         private readonly IRegisterService _registerService;
         private readonly ILogger<RegisterController> _logger;
         private readonly ILoginService _loginService;
-
         public RegisterController(IRegisterService registerService, ILogger<RegisterController> logger, ILoginService loginService)
         {
             _registerService = registerService;
             _logger = logger;
             _loginService = loginService;
         }
-
         // POST: api/register/send-otp
         [HttpPost("send-otp")]
         public async Task<IActionResult> SendOtp([FromBody] OtpRequestDto otpRequestDto)
@@ -31,7 +28,6 @@ namespace Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
                 var result = await _registerService.SendOtpAsync(otpRequestDto.Email);
@@ -43,7 +39,6 @@ namespace Api.Controllers
                 return StatusCode(500, "Internal server error while sending OTP.");
             }
         }
-
         // POST: api/register/verify-otp
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtpAndRegister([FromBody] VerifyOtpDto verifyOtpDto)
@@ -52,7 +47,6 @@ namespace Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
                 var result = await _registerService.VerifyOtpAndRegisterAsync(
@@ -60,12 +54,10 @@ namespace Api.Controllers
                     verifyOtpDto.Otp,
                     verifyOtpDto.RegisterDto
                 );
-
                 if (result.Succeeded)
                 {
                     return Ok("Registration completed successfully.");
                 }
-
                 return BadRequest(result.Errors);
             }
             catch (Exception ex)
@@ -75,16 +67,54 @@ namespace Api.Controllers
             }
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        [HttpPost("initiate-login")]
+        public async Task<IActionResult> InitiateLogin([FromBody] LoginDto loginDto)
         {
-            var result = await _loginService.AuthenticateUserAsync(loginDto);
-            if (result != null)
+            if (!ModelState.IsValid)
             {
-                return Ok(result);
+                return BadRequest(ModelState);
             }
 
-            return Unauthorized();
+            try
+            {
+                var result = await _loginService.InitiateLoginAsync(loginDto);
+                return Ok(new { message = result });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Failed login attempt for user {Email}", loginDto.Email);
+                return Unauthorized(new { message = "Invalid credentials." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while initiating login for user {Email}", loginDto.Email);
+                return StatusCode(500, "Internal server error while initiating login.");
+            }
+        }
+
+        [HttpPost("verify-login-otp")]
+        public async Task<IActionResult> VerifyLoginOtp([FromBody] LoginOtpVerificationDto verificationDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var result = await _loginService.VerifyOtpAndCompleteLoginAsync(verificationDto.Email, verificationDto.Otp);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Failed OTP verification for user {Email}", verificationDto.Email);
+                return Unauthorized(new { message = "Invalid or expired OTP." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while verifying login OTP for user {Email}", verificationDto.Email);
+                return StatusCode(500, "Internal server error while verifying login OTP.");
+            }
         }
     }
 }
