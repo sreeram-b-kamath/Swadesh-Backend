@@ -39,5 +39,7 @@ public class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(u => u.Password)
         .IsRequired()
         .HasMaxLength(1500);
+
+        builder.Ignore(u=>u.ConcurrencyStamp).Ignore(u=>u.NormalizedEmail).Ignore(u=>u.NormalizedUserName).Ignore(u=>u.SecurityStamp).Ignore(u=>u.AccessFailedCount).Ignore(u=>u.LockoutEnabled).Ignore(u=>u.LockoutEnd).Ignore(u=>u.PhoneNumber).Ignore(u => u.PhoneNumberConfirmed);
     }
 }
