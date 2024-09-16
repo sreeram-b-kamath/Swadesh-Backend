@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using Enums;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Shared;
 public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
@@ -23,10 +24,12 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
         builder.Property(x => x.InitialLogin)
         .HasDefaultValue(true);
 
-        builder.HasMany(x => x.MenuCategories)
+        
+
+       /* builder.HasMany(x => x.MenuCategories)
         .WithOne(x => x.Restaurant)
         .HasForeignKey(x => x.RestaurantId)
-        .OnDelete(DeleteBehavior.Cascade);
+        .OnDelete(DeleteBehavior.Cascade);*/
 
         builder.HasMany(x => x.MenuFilters)
         .WithOne(x => x.Restaurant)
@@ -38,7 +41,7 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
         .HasForeignKey(x => x.RestaurantId)
         .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(x => x.MenuCategoryLangs)
+       /* builder.HasMany(x => x.MenuCategoryLangs)
        .WithOne(x => x.Restaurant)
        .HasForeignKey(x => x.RestaurantId)
        .OnDelete(DeleteBehavior.Cascade);
@@ -56,7 +59,7 @@ public class RestaurantConfig : IEntityTypeConfiguration<Restaurant>
         builder.HasMany(x => x.RestaurantLang)
        .WithOne(x => x.Restaurant)
        .HasForeignKey(x => x.RestaurantId)
-       .OnDelete(DeleteBehavior.Cascade);
+       .OnDelete(DeleteBehavior.Cascade);*/
 
         builder.HasMany(x => x.MenuItemRatings)
        .WithOne(x => x.Restaurant)

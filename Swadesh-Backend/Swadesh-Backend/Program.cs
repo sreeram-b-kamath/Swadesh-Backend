@@ -1,16 +1,25 @@
 using Application.Helpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Shared.Data;
+using System.Text;
 using Application.Services;
-using System;
-/*using Application.Services.EMailService;*/
+using Application.Services.EMailService;
 using Interface.EmailService;
 using Application.Interface;
 using ComplianceCalendar.Services.EmailService;
-using Swadesh_Backend;
-using Microsoft.AspNetCore.Identity;
 using Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
+using DotNetEnv;
+using Microsoft.AspNetCore.Identity;
+using Swadesh_Backend;
+using System.Text.Json.Serialization;
+
+// Load environment variables
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,13 +33,16 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-/*builder.Services.AddScoped<IRegisterService, RegisterService>();*/
+
+builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 /*builder.Services.AddScoped<IEmailService, EmailService>();*/
 builder.Services.AddScoped<IAdminService, AdminService>();
@@ -51,20 +63,56 @@ builder.Services.Configure<EmailSettings>(options =>
     options.SmtpPort = emailPort;
 });
 
+// Configure PostgreSQL connection
 var connectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
-
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
 
+// Configure Identity services
 builder.Services.AddIdentity<User, IdentityRole<int>>()
         .AddEntityFrameworkStores<ApplicationDBContext>()
         .AddDefaultTokenProviders();
 
+// CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,// Ensure audience validation is enabled
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience, // Set the valid audience
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+    };
+});
+
+// Add authorization
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -72,9 +120,13 @@ if (app.Environment.IsDevelopment())
     app.UseCors("AllowLocalhost");
 }
 
-app.UseHttpsRedirection();
+// Enable CORS policy
+app.UseCors("AllowLocalhost");
 
-app.UseAuthorization();
+// Enable authentication and authorization middleware
+app.UseHttpsRedirection();
+app.UseAuthentication(); // Enable authentication
+app.UseAuthorization();  // Enable authorization
 
 app.MapControllers();
 

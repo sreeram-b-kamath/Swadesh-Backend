@@ -16,7 +16,7 @@ public class MenuCategoryConfig : IEntityTypeConfiguration<MenuCategory>
         .IsRequired();
 
         builder.HasIndex(x => x.Uid)
-        .IsUnique();        
+        .IsUnique();
 
         builder.Property(x => x.RestaurantId)
         .IsRequired();
@@ -24,11 +24,11 @@ public class MenuCategoryConfig : IEntityTypeConfiguration<MenuCategory>
         builder.Property(x => x.Active)
         .HasDefaultValue(true);
 
-        builder.HasMany(x => x.MenuCategoryLanguage)
+        /*builder.HasMany(x => x.MenuCategoryLanguage)
        .WithOne(x => x.MenuCategory)
        .HasForeignKey(x => x.MenuCategoryId)
-       .OnDelete(DeleteBehavior.Cascade);
-       
+       .OnDelete(DeleteBehavior.Cascade);*/
+
         builder.HasIndex(x => new { x.Name, x.RestaurantId }).IsUnique();
     }
 }
