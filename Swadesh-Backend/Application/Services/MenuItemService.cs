@@ -50,14 +50,17 @@ namespace Application.Services
             }
             
              var menuItems = await _context.menuItems
-    .             Where(mi => (request.FilterIds == null || !request.FilterIds.Any()) ||
+.Where(mi => mi.RestaurantId == request.RestaurantId && mi.Active &&
+             (
+                 request.FilterIds == null ||
+                 !request.FilterIds.Any() ||
                  mi.MenuFilterIds.Any(fid => request.FilterIds.Contains(fid))
-                 && mi.RestaurantId == request.RestaurantId
-                 && mi.Active)
-                 .Include(mi => mi.MenuCategory)
-                 .Include(mi => mi.MenuItemIngredients)  // Include the ingredients
-                 .ThenInclude(mii => mii.Ingredients)
-                 .ToListAsync();
+             ))
+.Include(mi => mi.MenuCategory)
+.Include(mi => mi.MenuItemIngredients)
+    .ThenInclude(mii => mii.Ingredients)
+.Include(mi => mi.MenuItemRatings)
+.ToListAsync();
 
 
             var menuItemResponses = _mapper.Map<List<MenuItemResponse>>(menuItems);

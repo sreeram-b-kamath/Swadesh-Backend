@@ -45,6 +45,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<IMenuFilterService, MenuFilterService>();
 builder.Services.AddScoped<IIngredientsService, IngredientsService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IRestrictionService, RestrictionService>();
 
 
